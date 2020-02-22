@@ -1,6 +1,7 @@
 import pandas as pd
 from bs4 import BeautifulSoup
 import urllib.request as ur
+import datetime
 
 
 tickers = ["GOOG","NFLX","FB","AMZN"]
@@ -34,7 +35,7 @@ for index,ticker in enumerate(tickers):
         new_ls = new_ls[12:]  
         new_ls = [x.replace(",", "") for x in new_ls]
   
-    if "2019" in new_ls[2]:
+    if str(datetime.date.today().year - 1) in new_ls[2]:
         x = 6
     else:
         x = 5
@@ -52,7 +53,7 @@ for index,ticker in enumerate(tickers):
         new_ls = [x.replace(",", "") for x in new_ls]
         is_data = list(zip(*[iter(new_ls)]*x))
         income_statements[ticker] = pd.DataFrame(is_data[0:])
-        income_statements[ticker].iloc[1:,1:] = income_statements[ticker].iloc[1:,1:].apply(pd.to_numeric,errors="coerce")
+        income_statements[ticker].iloc[1:,1:] = (income_statements[ticker].iloc[1:,1:].apply(pd.to_numeric,errors="coerce") * 1000)
         
     read_data_cash_flow = ur.urlopen(url_cf).read() 
     soup_cf = BeautifulSoup(read_data_cash_flow,"lxml")
@@ -72,7 +73,7 @@ for index,ticker in enumerate(tickers):
         new_ls = new_ls[12:]  
         new_ls = [x.replace(",", "") for x in new_ls]
   
-    if "2019" in new_ls[2]:
+    if str(datetime.date.today().year - 1) in new_ls[2]:
         x = 6
     else:
         x = 5
@@ -91,7 +92,7 @@ for index,ticker in enumerate(tickers):
         
         is_data = list(zip(*[iter(new_ls)]*x))
         cash_flows[ticker] = pd.DataFrame(is_data[0:]) 
-        cash_flows[ticker].iloc[1:,1:] = cash_flows[ticker].iloc[1:,1:].apply(pd.to_numeric,errors="coerce")
+        cash_flows[ticker].iloc[1:,1:] = (cash_flows[ticker].iloc[1:,1:].apply(pd.to_numeric,errors="coerce")*1000)
 
 
 ###### Balance Sheet        
@@ -111,7 +112,7 @@ for index,ticker in enumerate(tickers):
         new_ls = new_ls[12:]  
         new_ls = [x.replace(",", "") for x in new_ls]
   
-    if "2019" in new_ls[1]:
+    if str(datetime.date.today().year - 1) in new_ls[1]:
         x = 5
     else:
         x = 4   
@@ -130,7 +131,7 @@ for index,ticker in enumerate(tickers):
         new_ls = [x.replace(",", "") for x in new_ls]
         is_data = list(zip(*[iter(new_ls)]*x))
         balance_sheets[ticker] = pd.DataFrame(is_data[0:])
-        balance_sheets[ticker].iloc[1:,1:] = balance_sheets[ticker].iloc[1:,1:].apply(pd.to_numeric,errors="coerce")
+        balance_sheets[ticker].iloc[1:,1:] = (balance_sheets[ticker].iloc[1:,1:].apply(pd.to_numeric,errors="coerce")*1000)
         
         
     # Index and name columns of statements    
